@@ -1,0 +1,7 @@
+{
+  "name": "browser_integration",
+  "description": "Example host for native messaging",
+  "path": "/home/f1/dev/app/browser_integration/native/browser_integration",
+  "type": "stdio",
+  "allowed_extensions": [ "browser_integration@fhill2.com" ]
+}

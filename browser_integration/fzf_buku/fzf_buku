@@ -1,0 +1,37 @@
+#!/usr/bin/bash
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+# truncating the columns to achieve the nice aligned display, but still be able to fuzzy search the whole url and description
+#therefore skim needs to be passed full input for the search - limits preprocessing tools
+#no options to truncate columns in skim or fzf
+# col size has to be within skim or fzf
+# as skim needs to keep the data of the column, but hide it (so the url can show as the centFZF_DEFAULT_COMMAND="$CMD_BUKU | $CMD_AWK"
+
+FZF_DEFAULT_COMMAND="$SCRIPT_DIR/get_bookmarks"
+SHEADER='Selection Mode'
+mapfile -t multiselect <<< $(
+fzf \
+   --multi --ansi --delimiter '\t' --header-lines 1   \
+   --preview 'echo {3} >> ~/tmp/native.fifo' --preview-window wrap:hidden:0% \
+   --bind 'ctrl-a:toggle-preview+execute(notify-send "toggle live preview")' \
+   --bind "ctrl-e:execute(buku --write {1} > /dev/tty)+reload:($FZF_DEFAULT_COMMAND)" \
+   --bind "ctrl-d:execute(buku --delete {1} > /dev/tty)+reload:($FZF_DEFAULT_COMMAND)" \
+ )
+
+for i in "${multiselect[@]}"; do
+    # echo "$i"
+    url="$(echo "$i" | awk -F'\t' '{print $2}')"
+    # echo "$url"
+    # buku -o "$url"
+    xdg-open "$url"
+done
+
+
+# old tries to edit tags without using nvim - it didnt work as clear-query resets the index of the search that was done before the action
+  # FZF_DEFAULT_COMMAND="echo '$SHEADER'; $CMD" 
+  # RHEADER='Rename Mode - Type tags, C-\\ to write..'
+  # --bind "ctrl-r:disable-search+reload:echo $RHEADER; $CMD" \
+  #--bind "ctrl-\:execute(buku --tag {q} --update {1})+clear-query+enable-search+reload($FZF_DEFAULT_COMMAND)" \
+  #--bind 'ctrl-o:execute:notify-send $(${EDITOR:-nvim} {2} > /dev/tty)' \
+  #--bind 'ctrl-e:execute:notify-send "$(fzf --header "Edit Tags:" -q {q} --print-query)"' \
