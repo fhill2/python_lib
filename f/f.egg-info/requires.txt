@@ -1,0 +1,8 @@
+ghapi
+gitpython
+PyYAML
+emoji
+python-frontmatter
+promnesia
+mistletoe
+raindrop-io-py

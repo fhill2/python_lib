@@ -1,0 +1,6 @@
+bookmarks
+browser
+i3
+notes
+sgsync
+starfarm
